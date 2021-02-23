@@ -1,0 +1,113 @@
+<div class="wrapper text-white bg-info">
+  <!-- Sidebar  -->
+  <nav id="sidebar" class="active">
+    <div class="sidebar-header">
+      <div class="row p-2" style="max-height: 50px">
+        <div class="float-left ml-2 p-2"><span>CINEMA</span> <h4 style="color:darkred;background-color: lightblue;text-align: center;">TW</h4></div>
+      </div>
+    </div>
+
+    <ul class="list-unstyled components">
+      <p>
+        <span class="row p-2">
+          <span class="col-4" style="min-width: 50px">
+            <mat-icon style="font-size: 50px">face</mat-icon>
+          </span>
+          <span class="col-8" *ngIf="auth.isLoggedIn()">
+            {{auth.user.firstName}} <span class="font-weight-bold">{{auth.user.lastName | uppercase}}</span>
+            <br><span>{{auth.isOwner() ? 'Owner' : (auth.isAdmin() ? 'admin' : 'User')}}</span>
+          </span>
+
+        </span>
+      </p>
+      <li class="active">
+        <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">User</a>
+        <ul class="collapse list-unstyled" id="homeSubmenu">
+          <li>
+            <a routerLink="/profile">Mon profile</a>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <a href="#" routerLink="/cinema">Home</a>
+      </li>
+
+      <li *ngIf="auth.isLoggedIn() && auth.isAdmin()">
+        <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Admin</a>
+        <ul class="collapse list-unstyled" id="pageSubmenu">
+          <li>
+            <a routerLink="/admin/cities">Villes</a>
+          </li>
+          <li>
+            <a routerLink="/admin/films">Films</a>
+          </li>
+          <li>
+            <a routerLink="/admin/users">Users</a>
+          </li>
+        </ul>
+      </li>
+      <li *ngIf="auth.isLoggedIn() && auth.isAdmin()">
+        <a href="#villesSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Projections</a>
+        <ul class="collapse list-unstyled" id="villesSubmenu">
+          <li *ngFor="let ville of villes">
+            <a [href]="'#ville_' + ville.id+'_submenu'" data-toggle="collapse" aria-expanded="false"
+               class="dropdown-toggle">
+              {{ville.name}}</a>
+            <ul class="collapse list-unstyled" [id]="'ville_' + ville.id+'_submenu'">
+              <li *ngFor="let cinema of ville.cinemas">
+                <a [routerLink]="'/admin/projections/byCinema/'+cinema.id">{{cinema.name | uppercase}}</a>
+
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+
+  <div id="content">
+
+    <nav class="navbar navbar-expand-lg text-white" style="background-color: #6d7fcc">
+      <div class="container-fluid">
+        <button mat-fab color="accent" (click)="onSidebarCollapse()" aria-label="Example icon button with a menu icon">
+          <mat-icon>menu</mat-icon>
+        </button>
+        <button class="btn btn-dark d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse"
+                data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+          <i class="fas fa-align-justify"></i>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="nav navbar-nav ml-auto">
+            <li class="nav-item active" *ngIf="!auth.isLoggedIn()">
+              <a class="nav-link" mat-raised-button color="accent" routerLink="/register" style="margin-right: 5px;">Register</a>
+            </li>
+            <li class="nav-item active">
+              <a class="nav-link" mat-raised-button color="accent" routerLink="/">Cinemas</a>
+            </li>
+            <li class="nav-item active" *ngIf="!auth.isLoggedIn()">
+              <a *ngIf="!auth.isLoggedIn()" class="nav-link"
+                 routerLink="/login">
+                <mat-icon>login</mat-icon>
+              </a>
+            </li>
+            <li class="nav-item" *ngIf="auth.isLoggedIn()">
+              <button mat-button (click)="logout()">
+                <mat-icon>logout</mat-icon>
+              </button>
+
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <div class="container-fluid">
+      <router-outlet>
+      </router-outlet>
+
+    </div>
+
+  </div>
+</div>
+<ngx-alerts></ngx-alerts>
